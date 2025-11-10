@@ -1,0 +1,61 @@
+import { StyleSheet } from "react-native"
+import { COLORS, FONTS } from "@/utils/theme"
+
+export const styles = StyleSheet.create({
+    container:{
+        flex:1,
+        backgroundColor:COLORS.gray100,
+        borderColor:COLORS.gray200,
+        borderWidth:1,
+        padding:16,
+        borderRadius:10,
+        flexDirection:'row',
+        gap:12,
+    },
+    cardContent:{
+        gap:8,
+        width:'60%',
+    },
+    cardTitle:{
+        color:COLORS.gray700,
+        fontSize:FONTS.md,
+        fontWeight:'bold',
+    },
+    status:{
+        position:'absolute',
+        right:16,
+        top:16,
+        flexDirection:'row',
+        alignItems:'center',
+        gap:6,
+        paddingHorizontal:8,
+        paddingVertical:4,
+        backgroundColor:COLORS.successLight,
+        borderRadius:6,
+        fontSize:FONTS.xs,
+        color:COLORS.successDark
+    },
+    statusCircle:{
+        width:8,
+        height:8,
+        backgroundColor:COLORS.successBase,
+        borderRadius:10,
+    },
+    price:{
+        flexDirection:'row',
+        gap:4,
+        position:'absolute',
+        right:16,
+        bottom:16,
+    },
+    priceLabel:{
+        fontSize:FONTS.xs,
+        color:COLORS.gray700,
+        alignSelf:'flex-end'
+    },
+    priceValue:{
+        color:COLORS.gray700,
+        fontSize:FONTS.md,
+        fontWeight:'bold',
+    },
+})

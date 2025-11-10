@@ -50,4 +50,13 @@ export const styles = StyleSheet.create({
         borderRadius: 100,
         justifyContent: 'center',
     },
+    empty: {
+        fontSize: 14,
+        color: "#808080",
+        textAlign: 'center'
+    },
+    separator: {
+        width: "100%",
+        height: 8,
+    },
 })
