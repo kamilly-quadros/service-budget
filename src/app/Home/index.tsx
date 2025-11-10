@@ -22,7 +22,7 @@ const DATA = [
     },
 ];
 // const DATA = undefined;
-export default function Home({navigation}:DrawerRoutesProps<"filter">) {
+export default function Home() {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -34,7 +34,7 @@ export default function Home({navigation}:DrawerRoutesProps<"filter">) {
                         Você tem ? item em rascunho
                     </Text>
                 </View>
-                <Button title="Novo" onPress={()=>navigation.toggleDrawer()}/>
+                <Button title="Novo" />
             </View>
             <View style={styles.content}>
                 <View style={styles.searchContainer}>
