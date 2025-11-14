@@ -7,7 +7,6 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: 'white',
         paddingTop: 62,
-
     },
     header: {
         padding: 20,
