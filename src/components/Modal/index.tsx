@@ -16,7 +16,9 @@ interface FilterProps {
 export default function ModalComponent({ modalVisible, setModalVisible, title }: FilterProps) {
     const [ordering, setOrdering] = useState<string | null>(null);
     const [status, setStatus] = useState({ rascunho: false, enviado: false, aprovado: false, recusado: false, });
-    const resetFilters = () => { setStatus({ rascunho: false, enviado: false, aprovado: false, recusado: false, }); setOrdering(null); };
+    const resetFilters = () => {
+        setStatus({ rascunho: false, enviado: false, aprovado: false, recusado: false, }); setOrdering(null); setModalVisible(!modalVisible)
+    };
     return (
         <Modal
             animationType="slide"
