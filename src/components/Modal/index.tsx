@@ -1,4 +1,5 @@
 import Status from "../Status";
+import { useState } from "react";
 import { styles } from "./styles";
 import { Button } from "../Button";
 import { COLORS } from "@/utils/theme";
@@ -13,6 +14,9 @@ interface FilterProps {
     title: string
 }
 export default function ModalComponent({ modalVisible, setModalVisible, title }: FilterProps) {
+    const [ordering, setOrdering] = useState<string | null>(null);
+    const [status, setStatus] = useState({ rascunho: false, enviado: false, aprovado: false, recusado: false, });
+    const resetFilters = () => { setStatus({ rascunho: false, enviado: false, aprovado: false, recusado: false, }); setOrdering(null); };
     return (
         <Modal
             animationType="slide"
@@ -37,19 +41,19 @@ export default function ModalComponent({ modalVisible, setModalVisible, title }:
                         </Text>
                         <View style={styles.statusContent}>
                             <View style={styles.content}>
-                                <CheckboxComponent />
+                                <CheckboxComponent value={status.rascunho} onValueChange={() => setStatus({ ...status, rascunho: !status.rascunho })} />
                                 <Status mode="Rascunho" />
                             </View>
                             <View style={styles.content}>
-                                <CheckboxComponent />
+                                <CheckboxComponent value={status.enviado} onValueChange={() => setStatus({ ...status, enviado: !status.enviado })} />
                                 <Status mode="Enviado" />
                             </View>
                             <View style={styles.content}>
-                                <CheckboxComponent />
+                                <CheckboxComponent value={status.aprovado} onValueChange={() => setStatus({ ...status, aprovado: !status.aprovado })} />
                                 <Status mode="Aprovado" />
                             </View>
                             <View style={styles.content}>
-                                <CheckboxComponent />
+                                <CheckboxComponent value={status.recusado} onValueChange={() => setStatus({ ...status, recusado: !status.recusado })} />
                                 <Status mode="Recusado" />
                             </View>
                         </View>
@@ -60,7 +64,7 @@ export default function ModalComponent({ modalVisible, setModalVisible, title }:
                         </Text>
                         <View style={styles.statusContent}>
                             <View style={styles.ordenationContent}>
-                                <RadioButton />
+                                <RadioButton selected={ordering === "recent"} onPress={() => setOrdering("recent")} />
                                 <View style={styles.status}>
                                     <Text style={styles.orderingText}>
                                         Mais recente
@@ -68,7 +72,7 @@ export default function ModalComponent({ modalVisible, setModalVisible, title }:
                                 </View>
                             </View>
                             <View style={styles.ordenationContent}>
-                                <RadioButton />
+                                <RadioButton selected={ordering === "old"} onPress={() => setOrdering("old")} />
                                 <View style={styles.status}>
                                     <Text style={styles.orderingText}>
                                         Mais antigo
@@ -76,7 +80,7 @@ export default function ModalComponent({ modalVisible, setModalVisible, title }:
                                 </View>
                             </View>
                             <View style={styles.ordenationContent}>
-                                <RadioButton />
+                                <RadioButton selected={ordering === "high"} onPress={() => setOrdering("high")} />
                                 <View style={styles.status}>
                                     <Text style={styles.orderingText}>
                                         Maior valor
@@ -84,7 +88,7 @@ export default function ModalComponent({ modalVisible, setModalVisible, title }:
                                 </View>
                             </View>
                             <View style={styles.ordenationContent}>
-                                <RadioButton />
+                                <RadioButton selected={ordering === "low"} onPress={() => setOrdering("low")} />
                                 <View style={styles.status}>
                                     <Text style={styles.orderingText}>
                                         Menor valor
@@ -95,7 +99,7 @@ export default function ModalComponent({ modalVisible, setModalVisible, title }:
                     </View>
                 </View>
                 <View style={styles.footer}>
-                    <TouchableOpacity style={styles.button}>
+                    <TouchableOpacity style={styles.button} onPress={resetFilters}>
                         <Text style={styles.buttonText}>Resetar filtros</Text>
                     </TouchableOpacity>
                     <Button title="Aplicar" mode="Check" />
