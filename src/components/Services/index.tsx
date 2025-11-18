@@ -1,15 +1,15 @@
 import { styles } from "./styles"
 import { COLORS } from "@/utils/theme"
-import { View, Text } from "react-native"
 import Edit from '../../assets/icons/Edit.svg'
+import { View, Text, TouchableOpacity, TouchableOpacityProps } from "react-native"
 
-interface ServiceProps {
+interface ServiceProps extends TouchableOpacityProps {
     title: string
     description: string
     price: number
     quantity: number
 }
-export default function Services({ title, description, price, quantity }: ServiceProps) {
+export default function Services({ title, description, price, quantity, ...rest }: ServiceProps) {
     const formattedPrice = price.toLocaleString("pt-BR", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
@@ -27,7 +27,9 @@ export default function Services({ title, description, price, quantity }: Servic
                 </View>
                 <Text style={styles.quantity}>{`Qt: ` + quantity}</Text>
             </View>
-            <Edit width={24} height={24} color={COLORS.purpleBase} />
+            <TouchableOpacity {...rest}>
+                <Edit width={24} height={24} color={COLORS.purpleBase} />
+            </TouchableOpacity>
         </View>
     )
 }

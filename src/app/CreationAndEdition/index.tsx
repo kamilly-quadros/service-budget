@@ -65,8 +65,20 @@ export default function CreationAndEdition() {
                         <Text style={styles.cardTitle}>Serviços inclusos</Text>
                     </View>
                     <View style={styles.cardContent}>
-                        <Services title="Design de interfaces" description="Criação de wireframes e protótipos" price={3847.50} quantity={1} />
-                        <Services title="Implantação e suporte" description="Publicação nas lojas de aplicativo" price={3847.50} quantity={1} />
+                        <Services
+                            title="Design de interfaces"
+                            description="Criação de wireframes e protótipos"
+                            price={3847.50}
+                            quantity={1}
+                            onPress={() => setModalVisible(true)}
+                        />
+                        <Services
+                            title="Implantação e suporte"
+                            description="Publicação nas lojas de aplicativo"
+                            price={3847.50}
+                            quantity={1}
+                            onPress={() => setModalVisible(true)}
+                        />
                         <Button title="Adicionar serviço" mode="Plus" variant="pale" onPress={() => setModalVisible(true)} />
                     </View>
                 </View>
