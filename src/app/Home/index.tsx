@@ -1,12 +1,15 @@
-import { useState } from "react"
+import { useState } from 'react'
 import { styles } from "./styles"
-import Card from "@/components/Card"
-import { COLORS } from "@/utils/theme"
-import { Input } from "@/components/Input"
-import { Button } from "@/components/Button"
-import ModalComponent from "@/components/Modal"
+import Card from '@/components/Card'
+import { COLORS } from '@/utils/theme'
+import Status from '@/components/Status'
+import { Input } from '@/components/Input'
+import { Button } from '@/components/Button'
+import ModalComponent from '@/components/Modal'
+import RadioButton from '@/components/RadioButton'
+import CheckboxComponent from '@/components/Checkbox'
 import FilterIcon from '../../assets/icons/FilterIcon.svg'
-import { View, Text, FlatList, TouchableOpacity } from "react-native"
+import { View, Text, FlatList, TouchableOpacity } from 'react-native'
 
 const DATA = [
     {
@@ -25,6 +28,11 @@ const DATA = [
 // const DATA = undefined;
 export default function Home({ navigation }: any) {
     const [modalVisible, setModalVisible] = useState(false);
+    const [ordering, setOrdering] = useState<string | null>(null);
+    const [status, setStatus] = useState({ rascunho: false, enviado: false, aprovado: false, recusado: false, });
+    const resetFilters = () => {
+        setStatus({ rascunho: false, enviado: false, aprovado: false, recusado: false, }); setOrdering(null); setModalVisible(!modalVisible)
+    };
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -53,7 +61,92 @@ export default function Home({ navigation }: any) {
                     ItemSeparatorComponent={() => <View style={styles.separator} />}
                 />
             </View>
-            <ModalComponent modalVisible={modalVisible} setModalVisible={setModalVisible} title="Filtrar e ordenar" />
+            <ModalComponent
+                modalVisible={modalVisible}
+                setModalVisible={setModalVisible}
+                title="Filtrar e ordenar"
+                footer={
+                    <>
+                        <Button title="Resetar filtros" mode="none" variant="pale" onPress={resetFilters} />
+                        <Button title="Aplicar" mode="Check" variant="purple" />
+                    </>
+                }
+            >
+                <View style={styles.statusBody}>
+                    <Text style={styles.subTitle}>
+                        Status
+                    </Text>
+                    <View style={styles.statusContent}>
+                        <View style={styles.statusBox}>
+                            <CheckboxComponent
+                                value={status.rascunho}
+                                onValueChange={() => setStatus({ ...status, rascunho: !status.rascunho })}
+                            />
+                            <Status mode="Rascunho" />
+                        </View>
+                        <View style={styles.statusBox}>
+                            <CheckboxComponent
+                                value={status.enviado}
+                                onValueChange={() => setStatus({ ...status, enviado: !status.enviado })}
+                            />
+                            <Status mode="Enviado" />
+                        </View>
+                        <View style={styles.statusBox}>
+                            <CheckboxComponent
+                                value={status.aprovado}
+                                onValueChange={() => setStatus({ ...status, aprovado: !status.aprovado })}
+                            />
+                            <Status mode="Aprovado" />
+                        </View>
+                        <View style={styles.statusBox}>
+                            <CheckboxComponent
+                                value={status.recusado}
+                                onValueChange={() => setStatus({ ...status, recusado: !status.recusado })}
+                            />
+                            <Status mode="Recusado" />
+                        </View>
+                    </View>
+                </View>
+                <View style={styles.statusBody}>
+                    <Text style={styles.subTitle}>
+                        Ordenação
+                    </Text>
+                    <View style={styles.statusContent}>
+                        <View style={styles.ordenationContent}>
+                            <RadioButton selected={ordering === "recent"} onPress={() => setOrdering("recent")} />
+                            <View style={styles.status}>
+                                <Text style={styles.orderingText}>
+                                    Mais recente
+                                </Text>
+                            </View>
+                        </View>
+                        <View style={styles.ordenationContent}>
+                            <RadioButton selected={ordering === "old"} onPress={() => setOrdering("old")} />
+                            <View style={styles.status}>
+                                <Text style={styles.orderingText}>
+                                    Mais antigo
+                                </Text>
+                            </View>
+                        </View>
+                        <View style={styles.ordenationContent}>
+                            <RadioButton selected={ordering === "high"} onPress={() => setOrdering("high")} />
+                            <View style={styles.status}>
+                                <Text style={styles.orderingText}>
+                                    Maior valor
+                                </Text>
+                            </View>
+                        </View>
+                        <View style={styles.ordenationContent}>
+                            <RadioButton selected={ordering === "low"} onPress={() => setOrdering("low")} />
+                            <View style={styles.status}>
+                                <Text style={styles.orderingText}>
+                                    Menor valor
+                                </Text>
+                            </View>
+                        </View>
+                    </View>
+                </View>
+            </ModalComponent>
         </View>
     )
 }

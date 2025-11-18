@@ -58,4 +58,36 @@ export const styles = StyleSheet.create({
         width: "100%",
         height: 8,
     },
+    statusBody: {
+        gap: 16
+    },
+    subTitle: {
+        fontSize: FONTS.xs,
+        color: COLORS.gray500,
+    },
+    statusContent: {
+        gap: 12
+    },
+    ordenationContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 4
+    },
+    status: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 8,
+        paddingVertical: 4,
+        borderRadius: 6,
+        width: 'auto',
+        gap: 6,
+    },
+    orderingText: {
+        fontSize: FONTS.md,
+    },
+    statusBox: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 12
+    },
 })
