@@ -43,19 +43,31 @@ export default function ModalComponent({ modalVisible, setModalVisible, title }:
                         </Text>
                         <View style={styles.statusContent}>
                             <View style={styles.content}>
-                                <CheckboxComponent value={status.rascunho} onValueChange={() => setStatus({ ...status, rascunho: !status.rascunho })} />
+                                <CheckboxComponent
+                                    value={status.rascunho}
+                                    onValueChange={() => setStatus({ ...status, rascunho: !status.rascunho })}
+                                />
                                 <Status mode="Rascunho" />
                             </View>
                             <View style={styles.content}>
-                                <CheckboxComponent value={status.enviado} onValueChange={() => setStatus({ ...status, enviado: !status.enviado })} />
+                                <CheckboxComponent
+                                    value={status.enviado}
+                                    onValueChange={() => setStatus({ ...status, enviado: !status.enviado })}
+                                />
                                 <Status mode="Enviado" />
                             </View>
                             <View style={styles.content}>
-                                <CheckboxComponent value={status.aprovado} onValueChange={() => setStatus({ ...status, aprovado: !status.aprovado })} />
+                                <CheckboxComponent
+                                    value={status.aprovado}
+                                    onValueChange={() => setStatus({ ...status, aprovado: !status.aprovado })}
+                                />
                                 <Status mode="Aprovado" />
                             </View>
                             <View style={styles.content}>
-                                <CheckboxComponent value={status.recusado} onValueChange={() => setStatus({ ...status, recusado: !status.recusado })} />
+                                <CheckboxComponent
+                                    value={status.recusado}
+                                    onValueChange={() => setStatus({ ...status, recusado: !status.recusado })}
+                                />
                                 <Status mode="Recusado" />
                             </View>
                         </View>
@@ -104,7 +116,7 @@ export default function ModalComponent({ modalVisible, setModalVisible, title }:
                     <TouchableOpacity style={styles.button} onPress={resetFilters}>
                         <Text style={styles.buttonText}>Resetar filtros</Text>
                     </TouchableOpacity>
-                    <Button title="Aplicar" mode="Check" />
+                    <Button title="Aplicar" mode="Check" variant="purple" />
                 </View>
             </View>
         </Modal>

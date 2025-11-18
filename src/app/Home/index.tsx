@@ -23,7 +23,7 @@ const DATA = [
     },
 ];
 // const DATA = undefined;
-export default function Home() {
+export default function Home({ navigation }: any) {
     const [modalVisible, setModalVisible] = useState(false);
     return (
         <View style={styles.container}>
@@ -36,11 +36,11 @@ export default function Home() {
                         Você tem ? item em rascunho
                     </Text>
                 </View>
-                <Button title="Novo" mode="Plus" />
+                <Button title="Novo" mode="Plus" onPress={() => navigation.navigate('CreationAndEdition')} variant="purple" />
             </View>
             <View style={styles.content}>
                 <View style={styles.searchContainer}>
-                    <Input placeholder="Título ou cliente" />
+                    <Input placeholder="Título ou cliente" isSearch />
                     <TouchableOpacity style={styles.filterIcon} onPress={() => setModalVisible(!modalVisible)}>
                         <FilterIcon width={24} height={24} color={COLORS.purpleBase} />
                     </TouchableOpacity>

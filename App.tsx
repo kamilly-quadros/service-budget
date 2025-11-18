@@ -1,49 +1,43 @@
-import { StatusBar } from 'expo-status-bar';
-import React, { useState, useEffect } from 'react';
-import { 
-  StyleSheet, 
-  View, 
-  ActivityIndicator, 
-  Text as RNText, 
+import Home from './src/app/Home'
+import { StatusBar } from 'expo-status-bar'
+import { loadFonts } from './src/config/fonts'
+import React, { useState, useEffect } from 'react'
+import CreationAndEdition from '@/app/CreationAndEdition'
+import { NavigationContainer } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import {
+  StyleSheet,
+  View,
+  ActivityIndicator,
+  Text as RNText,
   TextInput as RNTextInput,
   TextProps as RNTextProps,
   TextInputProps as RNTextInputProps,
   StyleProp,
   TextStyle
-} from 'react-native';
-import { loadFonts } from './src/config/fonts';
-import Home from './src/app/Home';
+} from 'react-native'
 
-// Criando componentes personalizados com a fonte Lato
 export const Text = (props: RNTextProps) => {
   const { style, ...rest } = props;
   return (
-    <RNText 
-      style={[
-        { fontFamily: 'Lato-Regular' },
-        style,
-      ]} 
-      {...rest} 
+    <RNText
+      style={[{ fontFamily: 'Lato-Regular' }, style]}
+      {...rest}
     />
   );
 };
-
 export const TextInput = (props: RNTextInputProps) => {
   const { style, ...rest } = props;
   return (
-    <RNTextInput 
-      style={[
-        { fontFamily: 'Lato-Regular' },
-        style,
-      ]} 
-      {...rest} 
+    <RNTextInput
+      style={[{ fontFamily: 'Lato-Regular' }, style]}
+      {...rest}
     />
   );
 };
-
+const Stack = createNativeStackNavigator();
 export default function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
-
   useEffect(() => {
     async function prepare() {
       try {
@@ -54,10 +48,8 @@ export default function App() {
         setFontsLoaded(true);
       }
     }
-
     prepare();
   }, []);
-
   if (!fontsLoaded) {
     return (
       <View style={styles.loadingContainer}>
@@ -65,15 +57,24 @@ export default function App() {
       </View>
     );
   }
-
   return (
-    <View style={styles.container}>
+    <NavigationContainer>
       <StatusBar style="auto" />
-      <Home />
-    </View>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Home"
+          component={Home}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="CreationAndEdition"
+          component={CreationAndEdition}
+          options={{ headerShown: false }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -86,8 +87,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
 });
-
-// Adicionando a tipagem para o tema de fontes
 declare module 'react-native' {
   interface TextProps {
     style?: StyleProp<TextStyle>;
