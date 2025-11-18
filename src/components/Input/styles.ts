@@ -6,7 +6,6 @@ export const styles = StyleSheet.create({
         backgroundColor: COLORS.gray100,
         paddingHorizontal: 16,
         paddingVertical: 4,
-        height: 48,
         flex: 1,
         borderRadius: 100,
         borderWidth: 1,
@@ -23,5 +22,10 @@ export const styles = StyleSheet.create({
         margin: 0,
         fontSize: FONTS.md,
         color: COLORS.gray700,
-    }
+    },
+    money: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: COLORS.gray600
+    },
 })

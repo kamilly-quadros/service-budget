@@ -139,5 +139,9 @@ export const styles = StyleSheet.create({
     },
     red: {
         color: COLORS.dangerBase
+    },
+    inputContainer: {
+        flexDirection: 'row',
+        gap: 8
     }
 })

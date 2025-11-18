@@ -9,12 +9,14 @@ import Tag from '../../assets/icons/Tag.svg'
 import { Button } from '@/components/Button'
 import Shop from '../../assets/icons/Shop.svg'
 import Note from '../../assets/icons/Note.svg'
+import ModalComponent from '@/components/Modal'
 import Credit from '../../assets/icons/Credit.svg'
 import RadioButton from '@/components/RadioButton'
 import { View, Text, ScrollView } from 'react-native'
 
 export default function CreationAndEdition() {
     const [status, setStatus] = useState('')
+    const [modalVisible, setModalVisible] = useState(false);
     return (
         <ScrollView style={styles.container}>
             <Header />
@@ -65,7 +67,7 @@ export default function CreationAndEdition() {
                     <View style={styles.cardContent}>
                         <Services title="Design de interfaces" description="Criação de wireframes e protótipos" price={3847.50} quantity={1} />
                         <Services title="Implantação e suporte" description="Publicação nas lojas de aplicativo" price={3847.50} quantity={1} />
-                        <Button title="Adicionar serviço" mode="Plus" variant="pale" />
+                        <Button title="Adicionar serviço" mode="Plus" variant="pale" onPress={() => setModalVisible(true)} />
                     </View>
                 </View>
                 <View style={styles.card}>
@@ -116,6 +118,30 @@ export default function CreationAndEdition() {
                     <Button title="Salvar" mode="Check" variant="purple" />
                 </View>
             </View>
+            <ModalComponent
+                modalVisible={modalVisible}
+                setModalVisible={setModalVisible}
+                title='Serviço'
+                footer={
+                    <>
+                        <Button mode='Trash' variant='pale' onPress={() => setModalVisible(false)} />
+                        <Button title='Salvar' mode='Check' variant='purple' />
+                    </>
+                }
+            >
+                <>
+                    <Input placeholder='Título' />
+                    <Input placeholder='Descrição' isMultiline numberOfLines={10} />
+                    <View style={styles.inputContainer}>
+                        <View style={{ flex: 0.7 }}>
+                            <Input placeholder='0,00' isMoney />
+                        </View>
+                        <View style={{ flex: 0.3 }}>
+                            <Input placeholder='0' isNumber />
+                        </View>
+                    </View>
+                </>
+            </ModalComponent>
         </ScrollView>
     )
 }
