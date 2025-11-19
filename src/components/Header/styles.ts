@@ -9,10 +9,16 @@ export const styles = StyleSheet.create({
         borderBottomColor: COLORS.gray200,
         borderBottomWidth: 1,
         width: '100%',
+        justifyContent: 'space-between'
     },
     title: {
         fontSize: FONTS.sm,
         fontWeight: 'bold',
-        color: COLORS.gray700
+        color: COLORS.gray700,
     },
+    leftGroup: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 16,
+    }
 })

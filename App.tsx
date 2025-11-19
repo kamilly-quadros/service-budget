@@ -16,7 +16,13 @@ import {
   StyleProp,
   TextStyle
 } from 'react-native'
+import Details from '@/app/Details'
 
+export type RootStackParamList = {
+  Home: undefined;
+  CreationAndEdition: undefined;
+  Details: undefined;
+};
 export const Text = (props: RNTextProps) => {
   const { style, ...rest } = props;
   return (
@@ -35,7 +41,7 @@ export const TextInput = (props: RNTextInputProps) => {
     />
   );
 };
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 export default function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
   useEffect(() => {
@@ -69,6 +75,11 @@ export default function App() {
         <Stack.Screen
           name="CreationAndEdition"
           component={CreationAndEdition}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Details"
+          component={Details}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
