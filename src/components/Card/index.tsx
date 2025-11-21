@@ -1,24 +1,28 @@
 import { styles } from "./styles"
-import { RootStackParamList } from "../../../App"
-import { useNavigation } from '@react-navigation/native'
+import { QuoteStatus } from "@/types/Status"
 import { View, Text, TouchableOpacity } from "react-native"
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-export default function Card() {
-    const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+interface CardProps {
+    title: string
+    client: string
+    status: QuoteStatus
+    price: number
+    onPress?: () => void
+}
+export default function Card({ title, client, status, price, onPress }: CardProps) {
     return (
-        <TouchableOpacity style={styles.container} onPress={() => { navigation.navigate('Details') }}>
+        <TouchableOpacity style={styles.container} onPress={onPress}>
             <View style={styles.cardContent}>
-                <Text style={styles.cardTitle}>Desenvolvimento de aplicativo de loja online</Text>
-                <Text>Soluções Tecnológicas Beta</Text>
+                <Text style={styles.cardTitle}>{title}</Text>
+                <Text>{client}</Text>
             </View>
             <View style={styles.status}>
                 <View style={styles.statusCircle} />
-                <Text>Aprovado</Text>
+                <Text>{status}</Text>
             </View>
             <View style={styles.price}>
                 <Text style={styles.priceLabel}>R$</Text>
-                <Text style={styles.priceValue}>22.300,00</Text>
+                <Text style={styles.priceValue}>{price.toFixed(2)}</Text>
             </View>
         </TouchableOpacity>
     )

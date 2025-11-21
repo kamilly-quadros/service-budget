@@ -1,38 +1,46 @@
-import { useState } from 'react'
 import { styles } from "./styles"
 import Card from '@/components/Card'
 import { COLORS } from '@/utils/theme'
 import Status from '@/components/Status'
 import { Input } from '@/components/Input'
+import { QuoteStatus } from '@/types/Status'
 import { Button } from '@/components/Button'
+import { useState, useCallback } from 'react'
 import ModalComponent from '@/components/Modal'
 import RadioButton from '@/components/RadioButton'
 import CheckboxComponent from '@/components/Checkbox'
+import { useFocusEffect } from '@react-navigation/native'
 import FilterIcon from '../../assets/icons/FilterIcon.svg'
+import { quoteStorage, QuoteItem } from '@/storage/quoteStorage'
 import { View, Text, FlatList, TouchableOpacity } from 'react-native'
 
-const DATA = [
-    {
-        id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-        title: 'First Item',
-    },
-    {
-        id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-        title: 'Second Item',
-    },
-    {
-        id: '58694a0f-3da1-471f-bd96-145571e29d72',
-        title: 'Third Item',
-    },
-];
-// const DATA = undefined;
 export default function Home({ navigation }: any) {
-    const [modalVisible, setModalVisible] = useState(false);
+    const [quotes, setQuotes] = useState<QuoteItem[]>([]);
+    const [modalVisible, setModalVisible] = useState(false);    
     const [ordering, setOrdering] = useState<string | null>(null);
-    const [status, setStatus] = useState({ rascunho: false, enviado: false, aprovado: false, recusado: false, });
+    const [status, setStatus] = useState({ rascunho: false, enviado: false, aprovado: false, recusado: false, });    
     const resetFilters = () => {
-        setStatus({ rascunho: false, enviado: false, aprovado: false, recusado: false, }); setOrdering(null); setModalVisible(!modalVisible)
+        setStatus({ rascunho: false, enviado: false, aprovado: false, recusado: false });
+        setOrdering(null);
+        setModalVisible(false);
     };
+    function getTotalPrice(quote: QuoteItem) {
+        const subtotal = quote.items.reduce(
+            (acc, item) => acc + item.price * item.quantity,
+            0
+        );
+        const discountValue = subtotal * (quote.discountPct / 100);
+        return subtotal - discountValue;
+    }
+    useFocusEffect(
+        useCallback(() => {
+            async function loadQuotes() {
+                const data = await quoteStorage.get();
+                setQuotes(data);
+            }
+            loadQuotes();
+        }, [])
+    );
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -54,11 +62,25 @@ export default function Home({ navigation }: any) {
                     </TouchableOpacity>
                 </View>
                 <FlatList
-                    data={DATA}
-                    renderItem={({ item }) => <Card />}
-                    keyExtractor={item => item.id}
-                    ListEmptyComponent={() => <Text style={styles.empty}>Nenhum item aqui.</Text>}
-                    ItemSeparatorComponent={() => <View style={styles.separator} />}
+                    data={quotes}
+                    keyExtractor={(item) => item.id}
+                    renderItem={({ item }) => (
+                        <Card
+                            title={item.title}
+                            client={item.client}
+                            status={item.status}
+                            price={getTotalPrice(item)}
+                            onPress={() =>
+                                navigation.navigate('CreationAndEdition', { id: item.id })
+                            }
+                        />
+                    )}
+                    ListEmptyComponent={() => (
+                        <Text style={styles.empty}>Nenhum item aqui.</Text>
+                    )}
+                    ItemSeparatorComponent={() => (
+                        <View style={styles.separator} />
+                    )}
                 />
             </View>
             <ModalComponent
@@ -82,28 +104,28 @@ export default function Home({ navigation }: any) {
                                 value={status.rascunho}
                                 onValueChange={() => setStatus({ ...status, rascunho: !status.rascunho })}
                             />
-                            <Status mode="Rascunho" />
+                            <Status mode={QuoteStatus.SKETCH} />
                         </View>
                         <View style={styles.statusBox}>
                             <CheckboxComponent
                                 value={status.enviado}
                                 onValueChange={() => setStatus({ ...status, enviado: !status.enviado })}
                             />
-                            <Status mode="Enviado" />
+                            <Status mode={QuoteStatus.SENT} />
                         </View>
                         <View style={styles.statusBox}>
                             <CheckboxComponent
                                 value={status.aprovado}
                                 onValueChange={() => setStatus({ ...status, aprovado: !status.aprovado })}
                             />
-                            <Status mode="Aprovado" />
+                            <Status mode={QuoteStatus.APPROVED} />
                         </View>
                         <View style={styles.statusBox}>
                             <CheckboxComponent
                                 value={status.recusado}
                                 onValueChange={() => setStatus({ ...status, recusado: !status.recusado })}
                             />
-                            <Status mode="Recusado" />
+                            <Status mode={QuoteStatus.REFUSED} />
                         </View>
                     </View>
                 </View>
