@@ -15,10 +15,13 @@ import { quoteStorage, QuoteItem } from '@/storage/quoteStorage'
 import { View, Text, FlatList, TouchableOpacity } from 'react-native'
 
 export default function Home({ navigation }: any) {
+    const [search, setSearch] = useState("");
     const [quotes, setQuotes] = useState<QuoteItem[]>([]);
-    const [modalVisible, setModalVisible] = useState(false);    
+    const [modalVisible, setModalVisible] = useState(false);
     const [ordering, setOrdering] = useState<string | null>(null);
-    const [status, setStatus] = useState({ rascunho: false, enviado: false, aprovado: false, recusado: false, });    
+    const draftCount = quotes.filter(q => q.status === QuoteStatus.SKETCH).length;
+    const filteredQuotes = quotes.filter(q => q.title.toLowerCase().includes(search.toLowerCase()));
+    const [status, setStatus] = useState({ rascunho: false, enviado: false, aprovado: false, recusado: false, });
     const resetFilters = () => {
         setStatus({ rascunho: false, enviado: false, aprovado: false, recusado: false });
         setOrdering(null);
@@ -48,21 +51,23 @@ export default function Home({ navigation }: any) {
                     <Text style={styles.headerTitle}>
                         Orçamentos
                     </Text>
-                    <Text style={styles.headerText}>
-                        Você tem ? item em rascunho
-                    </Text>
+                    {draftCount > 0 && (
+                        <Text style={styles.headerText}>
+                            Você tem {draftCount} {draftCount === 1 ? "item" : "itens"} em rascunho
+                        </Text>
+                    )}
                 </View>
                 <Button title="Novo" mode="Plus" onPress={() => navigation.navigate('CreationAndEdition')} variant="purple" />
             </View>
             <View style={styles.content}>
                 <View style={styles.searchContainer}>
-                    <Input placeholder="Título ou cliente" isSearch />
+                    <Input placeholder="Título ou cliente" isSearch value={search} onChangeText={setSearch} />
                     <TouchableOpacity style={styles.filterIcon} onPress={() => setModalVisible(!modalVisible)}>
                         <FilterIcon width={24} height={24} color={COLORS.purpleBase} />
                     </TouchableOpacity>
                 </View>
                 <FlatList
-                    data={quotes}
+                    data={filteredQuotes}
                     keyExtractor={(item) => item.id}
                     renderItem={({ item }) => (
                         <Card
