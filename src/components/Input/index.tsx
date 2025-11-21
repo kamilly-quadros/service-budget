@@ -11,10 +11,17 @@ interface InputProps extends TextInputProps {
     isMultiline?: boolean
     isMoney?: boolean
     isNumber?: boolean
+    isPercentage?: boolean
 }
-export function Input({ isSearch = false, isMultiline = false, isMoney = false, isNumber = false, onChangeText, ...rest }: InputProps) {
+export function Input(
+    { isSearch = false, isMultiline = false, isMoney = false, isNumber = false, isPercentage = false, onChangeText, ...rest }: InputProps
+) {
     const [value, setValue] = useState("");
     const [isFocused, setIsFocused] = useState(false);
+    const getNumericValue = () => {
+        const num = Number(value.replace(/\D/g, ""));
+        return isNaN(num) ? 0 : num;
+    };
     const formatMoney = (text: string) => {
         const numeric = text.replace(/\D/g, "");
         if (!numeric) return "";
@@ -32,10 +39,6 @@ export function Input({ isSearch = false, isMultiline = false, isMoney = false, 
             setValue(text);
             onChangeText?.(text);
         }
-    };
-    const getNumericValue = () => {
-        const num = Number(value.replace(/\D/g, ""));
-        return isNaN(num) ? 0 : num;
     };
     const increment = () => {
         let num = getNumericValue() + 1;
@@ -67,10 +70,11 @@ export function Input({ isSearch = false, isMultiline = false, isMoney = false, 
             styles.container,
             {
                 borderColor: isFocused ? COLORS.purpleBase : COLORS.gray300,
-                height: isMultiline ? 120 : 48,
+                height: isMultiline ? 120 : isPercentage ? 32 : 48,
                 borderRadius: isMultiline ? 20 : 999,
                 alignItems: isMultiline ? 'flex-start' : 'center',
                 paddingVertical: isMultiline ? 10 : 0,
+                maxWidth: isPercentage ? 70 : '100%',
             },
         ]}>
             {isSearch && <Search width={20} height={20} color={isFocused ? COLORS.purpleBase : COLORS.gray600} />}
@@ -93,6 +97,7 @@ export function Input({ isSearch = false, isMultiline = false, isMoney = false, 
                 scrollEnabled={false}
                 {...rest}
             />
+            {isPercentage && <Text>%</Text>}
             {isNumber && (
                 <TouchableOpacity onPress={increment}>
                     <Plus width={20} height={20} color={COLORS.purpleBase} />

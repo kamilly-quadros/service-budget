@@ -7,16 +7,111 @@ import { Input } from '@/components/Input'
 import Services from '@/components/Services'
 import Tag from '../../assets/icons/Tag.svg'
 import { Button } from '@/components/Button'
+import { QuoteStatus } from '@/types/Status'
 import Shop from '../../assets/icons/Shop.svg'
 import Note from '../../assets/icons/Note.svg'
 import ModalComponent from '@/components/Modal'
 import Credit from '../../assets/icons/Credit.svg'
 import RadioButton from '@/components/RadioButton'
 import { View, Text, ScrollView } from 'react-native'
+import { quoteStorage } from "@/storage/quoteStorage"
+import { useNavigation } from '@react-navigation/native'
 
+interface ServiceItem {
+    id: number;
+    title: string;
+    description: string;
+    price: number;
+    quantity: number;
+}
 export default function CreationAndEdition() {
-    const [status, setStatus] = useState('')
+    const navigation = useNavigation();
+    const [title, setTitle] = useState('');
+    const [client, setClient] = useState('');
+    const [discount, setDiscount] = useState('');
+    const [serviceQty, setServiceQty] = useState('');
+    const [serviceDesc, setServiceDesc] = useState('');
+    const [status, setStatus] = useState<QuoteStatus>()
+    const [serviceTitle, setServiceTitle] = useState('');
+    const [servicePrice, setServicePrice] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
+    const [services, setServices] = useState<ServiceItem[]>([]);
+    const discountPercentage = Number(discount.replace(',', '.')) || 0;
+    const [editingServiceId, setEditingServiceId] = useState<number | null>(null);
+    const subtotal = services.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    const discountValue = subtotal * (discountPercentage / 100);
+    const totalValue = subtotal - discountValue;
+    function formatCurrency(value: number) {
+        return value.toLocaleString('pt-BR', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+    function handleEdit(service: ServiceItem) {
+        setEditingServiceId(service.id);
+        setServiceTitle(service.title);
+        setServiceDesc(service.description);
+        setServicePrice(String(service.price).replace('.', ','));
+        setServiceQty(String(service.quantity));
+        setModalVisible(true);
+    }
+    function handleDeleteService() {
+        if (!editingServiceId) return;
+        setServices(prev => prev.filter(item => item.id !== editingServiceId));
+        setEditingServiceId(null);
+        setServiceTitle('');
+        setServiceDesc('');
+        setServicePrice('');
+        setServiceQty('');
+        setModalVisible(false);
+    }
+    function handleSaveService() {
+        if (!serviceTitle || !servicePrice || !serviceQty) return;
+        const formattedService = {
+            id: editingServiceId ?? Date.now(),
+            title: serviceTitle,
+            description: serviceDesc,
+            price: Number(servicePrice.replace(',', '.')),
+            quantity: Number(serviceQty)
+        };
+        if (editingServiceId) {
+            setServices(prev =>
+                prev.map(item =>
+                    item.id === editingServiceId ? formattedService : item
+                )
+            );
+        } else {
+            setServices(prev => [...prev, formattedService]);
+        }
+        setEditingServiceId(null);
+        setServiceTitle('');
+        setServiceDesc('');
+        setServicePrice('');
+        setServiceQty('');
+        setModalVisible(false);
+    }
+    async function handleSaveQuote() {
+        if (!title || !client || services.length === 0 || !status) {
+            console.warn("Preencha todos os campos");
+            return;
+        }
+        const newQuote = {
+            id: String(Date.now()),
+            title,
+            client,
+            items: services,
+            discountPct: discountPercentage,
+            status,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        };
+        try {
+            await quoteStorage.add(newQuote);
+            navigation.goBack();
+        } catch (error) {
+            console.error("Erro ao salvar orçamento:", error);
+        }
+    }
     return (
         <ScrollView style={styles.container}>
             <Header />
@@ -27,8 +122,8 @@ export default function CreationAndEdition() {
                         <Text style={styles.cardTitle}>Informações gerais</Text>
                     </View>
                     <View style={styles.cardContent}>
-                        <Input placeholder="Título" />
-                        <Input placeholder="Cliente" />
+                        <Input placeholder="Título" value={title} onChangeText={setTitle} />
+                        <Input placeholder="Cliente" value={client} onChangeText={setClient} />
                     </View>
                 </View>
                 <View style={styles.card}>
@@ -39,22 +134,22 @@ export default function CreationAndEdition() {
                     <View style={styles.cardContent}>
                         <View style={styles.list}>
                             <View style={styles.option}>
-                                <RadioButton selected={status == 'rascunho'} onPress={() => setStatus('rascunho')} />
-                                <Status mode="Rascunho" />
+                                <RadioButton selected={status == QuoteStatus.SKETCH} onPress={() => setStatus(QuoteStatus.SKETCH)} />
+                                <Status mode={QuoteStatus.SKETCH} />
                             </View>
                             <View style={styles.option}>
-                                <RadioButton selected={status == 'aprovado'} onPress={() => setStatus('aprovado')} />
-                                <Status mode="Aprovado" />
+                                <RadioButton selected={status == QuoteStatus.APPROVED} onPress={() => setStatus(QuoteStatus.APPROVED)} />
+                                <Status mode={QuoteStatus.APPROVED} />
                             </View>
                         </View>
                         <View style={styles.list}>
                             <View style={styles.option}>
-                                <RadioButton selected={status == 'enviado'} onPress={() => setStatus('enviado')} />
-                                <Status mode="Enviado" />
+                                <RadioButton selected={status == QuoteStatus.SENT} onPress={() => setStatus(QuoteStatus.SENT)} />
+                                <Status mode={QuoteStatus.SENT} />
                             </View>
                             <View style={styles.option}>
-                                <RadioButton selected={status == 'recusado'} onPress={() => setStatus('recusado')} />
-                                <Status mode="Recusado" />
+                                <RadioButton selected={status == QuoteStatus.REFUSED} onPress={() => setStatus(QuoteStatus.REFUSED)} />
+                                <Status mode={QuoteStatus.REFUSED} />
                             </View>
                         </View>
                     </View>
@@ -65,20 +160,16 @@ export default function CreationAndEdition() {
                         <Text style={styles.cardTitle}>Serviços inclusos</Text>
                     </View>
                     <View style={styles.cardContent}>
-                        <Services
-                            title="Design de interfaces"
-                            description="Criação de wireframes e protótipos"
-                            price={3847.50}
-                            quantity={1}
-                            onPress={() => setModalVisible(true)}
-                        />
-                        <Services
-                            title="Implantação e suporte"
-                            description="Publicação nas lojas de aplicativo"
-                            price={3847.50}
-                            quantity={1}
-                            onPress={() => setModalVisible(true)}
-                        />
+                        {services.map(item => (
+                            <Services
+                                key={item.id}
+                                title={item.title}
+                                description={item.description}
+                                price={item.price}
+                                quantity={item.quantity}
+                                onPress={() => handleEdit(item)}
+                            />
+                        ))}
                         <Button title="Adicionar serviço" mode="Plus" variant="pale" onPress={() => setModalVisible(true)} />
                     </View>
                 </View>
@@ -91,43 +182,46 @@ export default function CreationAndEdition() {
                         <View style={styles.item}>
                             <Text style={styles.contentTitle}>Subtotal</Text>
                             <View style={styles.priceContainer}>
-                                <Text style={styles.itens}>8 itens</Text>
+                                <Text style={styles.itens}>{`${services.length} itens`}</Text>
                                 <View style={styles.priceInfo}>
                                     <Text style={styles.symbol}>R$</Text>
-                                    <Text style={styles.price}>3.847,50</Text>
+                                    <Text style={styles.price}>{formatCurrency(subtotal)}</Text>
                                 </View>
                             </View>
                         </View>
                         <View style={styles.item}>
                             <View style={styles.priceContainer}>
                                 <Text style={styles.contentTitle}>Desconto</Text>
-                                <View style={styles.discount}>
-                                    <Text style={styles.discountValue}>8</Text>
-                                    <Text style={styles.discountSymbol}>%</Text>
-                                </View>
+                                <Input placeholder='0' isPercentage value={discount} onChangeText={setDiscount} />
                             </View>
-                            <View style={styles.priceContainer}>
-                                <View style={styles.priceDiscount}>
-                                    <Text style={[styles.symbol, styles.red]}>- R$</Text>
-                                    <Text style={[styles.price, styles.red]}>200,00</Text>
+                            {discountValue > 0 && (
+                                <View style={styles.priceContainer}>
+                                    <View style={styles.priceDiscount}>
+                                        <Text style={[styles.symbol, styles.red]}>- R$</Text>
+                                        <Text style={[styles.price, styles.red]}>{formatCurrency(discountValue)}</Text>
+                                    </View>
                                 </View>
-                            </View>
+                            )}
                         </View>
                     </View>
                     <View style={styles.footer}>
                         <Text style={styles.title}>Valor total</Text>
                         <View>
-                            <Text style={[styles.line, styles.itens]}>RS 4.050,00</Text>
+                            {discountValue > 0 && (
+                                <Text style={[styles.line, styles.itens]}>
+                                    R$ {formatCurrency(subtotal)}
+                                </Text>
+                            )}
                             <View style={styles.totalPrice}>
                                 <Text style={styles.symbol}>R$</Text>
-                                <Text style={styles.total}>3.847,50</Text>
+                                <Text style={styles.total}>{formatCurrency(totalValue)}</Text>
                             </View>
                         </View>
                     </View>
                 </View>
                 <View style={styles.footerContainer}>
-                    <Button title="Cancelar" mode="none" variant="pale" />
-                    <Button title="Salvar" mode="Check" variant="purple" />
+                    <Button title="Cancelar" mode="none" variant="pale" onPress={() => navigation.goBack()} />
+                    <Button title="Salvar" mode="Check" variant="purple" onPress={handleSaveQuote} />
                 </View>
             </View>
             <ModalComponent
@@ -136,20 +230,31 @@ export default function CreationAndEdition() {
                 title='Serviço'
                 footer={
                     <>
-                        <Button mode='Trash' variant='pale' onPress={() => setModalVisible(false)} />
-                        <Button title='Salvar' mode='Check' variant='purple' />
+                        {editingServiceId && (
+                            <Button
+                                mode="Trash"
+                                variant="pale"
+                                onPress={handleDeleteService}
+                            />
+                        )}
+                        <Button
+                            title="Salvar"
+                            mode="Check"
+                            variant="purple"
+                            onPress={handleSaveService}
+                        />
                     </>
                 }
             >
                 <>
-                    <Input placeholder='Título' />
-                    <Input placeholder='Descrição' isMultiline numberOfLines={10} />
+                    <Input placeholder='Título' value={serviceTitle} onChangeText={setServiceTitle} />
+                    <Input placeholder='Descrição' isMultiline numberOfLines={10} value={serviceDesc} onChangeText={setServiceDesc} />
                     <View style={styles.inputContainer}>
                         <View style={{ flex: 0.7 }}>
-                            <Input placeholder='0,00' isMoney />
+                            <Input placeholder='0,00' isMoney value={servicePrice} onChangeText={setServicePrice} />
                         </View>
                         <View style={{ flex: 0.3 }}>
-                            <Input placeholder='0' isNumber />
+                            <Input placeholder='0' isNumber value={serviceQty} onChangeText={setServiceQty} />
                         </View>
                     </View>
                 </>

@@ -1,9 +1,10 @@
+import { QuoteStatus } from "@/types/Status";
 import { styles } from "./styles";
 import { COLORS } from "@/utils/theme";
 import { View, Text } from "react-native";
 
 interface StatusProps {
-    mode: 'Rascunho' | 'Enviado' | 'Aprovado' | 'Recusado'
+    mode: QuoteStatus.SKETCH | QuoteStatus.SENT | QuoteStatus.APPROVED | QuoteStatus.REFUSED
 }
 export default function Status({ mode }: StatusProps) {
     return (
@@ -11,9 +12,9 @@ export default function Status({ mode }: StatusProps) {
             style={
                 [styles.status, {
                     backgroundColor:
-                        mode == 'Rascunho' ? COLORS.gray300 :
-                            mode == 'Enviado' ? COLORS.infoLight :
-                                mode == 'Aprovado' ? COLORS.successLight : COLORS.dangerLight
+                        mode == QuoteStatus.SKETCH ? COLORS.gray300 :
+                            mode == QuoteStatus.SENT ? COLORS.infoLight :
+                                mode == QuoteStatus.APPROVED ? COLORS.successLight : COLORS.dangerLight
                 }]
             }
         >
@@ -21,9 +22,9 @@ export default function Status({ mode }: StatusProps) {
                 style={
                     [styles.statusCircle, {
                         backgroundColor:
-                            mode == 'Rascunho' ? COLORS.gray400 :
-                                mode == 'Enviado' ? COLORS.infoBase :
-                                    mode == 'Aprovado' ? COLORS.successBase : COLORS.dangerBase
+                            mode == QuoteStatus.SKETCH ? COLORS.gray400 :
+                                mode == QuoteStatus.SENT ? COLORS.infoBase :
+                                    mode == QuoteStatus.APPROVED ? COLORS.successBase : COLORS.dangerBase
                     }]
                 }
             />
@@ -31,9 +32,9 @@ export default function Status({ mode }: StatusProps) {
                 style={
                     [styles.statusText, {
                         color:
-                            mode == 'Rascunho' ? COLORS.gray500 :
-                                mode == 'Enviado' ? COLORS.infoDark :
-                                    mode == 'Aprovado' ? COLORS.successDark : COLORS.dangerDark
+                            mode == QuoteStatus.SKETCH ? COLORS.gray500 :
+                                mode == QuoteStatus.SENT ? COLORS.infoDark :
+                                    mode == QuoteStatus.APPROVED ? COLORS.successDark : COLORS.dangerDark
                     }]
                 }
             >
