@@ -19,22 +19,48 @@ export default function Home({ navigation }: any) {
     const [quotes, setQuotes] = useState<QuoteItem[]>([]);
     const [modalVisible, setModalVisible] = useState(false);
     const [ordering, setOrdering] = useState<string | null>(null);
+    const [tempOrdering, setTempOrdering] = useState(ordering);
     const draftCount = quotes.filter(q => q.status === QuoteStatus.SKETCH).length;
-    const filteredQuotes = quotes.filter(q => q.title.toLowerCase().includes(search.toLowerCase()));
-    const [status, setStatus] = useState({ rascunho: false, enviado: false, aprovado: false, recusado: false, });
-    const resetFilters = () => {
-        setStatus({ rascunho: false, enviado: false, aprovado: false, recusado: false });
-        setOrdering(null);
-        setModalVisible(false);
-    };
+    const [status, setStatus] = useState<Record<QuoteStatus, boolean>>({
+        [QuoteStatus.SKETCH]: false,
+        [QuoteStatus.SENT]: false,
+        [QuoteStatus.APPROVED]: false,
+        [QuoteStatus.REFUSED]: false,
+    });
+    const isFilterActive = Object.values(status).some(v => v) || ordering !== null;
+    const [tempStatus, setTempStatus] = useState(status);
     function getTotalPrice(quote: QuoteItem) {
-        const subtotal = quote.items.reduce(
-            (acc, item) => acc + item.price * item.quantity,
-            0
-        );
+        const subtotal = quote.items.reduce((acc, item) => acc + item.price * item.quantity, 0);
         const discountValue = subtotal * (quote.discountPct / 100);
         return subtotal - discountValue;
     }
+    const resetFilters = () => {
+        setStatus({
+            [QuoteStatus.SKETCH]: false,
+            [QuoteStatus.SENT]: false,
+            [QuoteStatus.APPROVED]: false,
+            [QuoteStatus.REFUSED]: false,
+        });
+        setOrdering(null);
+        setModalVisible(false);
+    };
+    const filteredQuotes = quotes
+        .filter(q => q.title.toLowerCase().includes(search.toLowerCase()))
+        .filter(q => {
+            const anyMarked = Object.values(status).some(v => v);
+            if (!anyMarked) return true;
+            return status[q.status] === true;
+        })
+        .sort((a, b) => {
+            if (!ordering) return 0;
+            if (ordering === "recent") return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+            if (ordering === "old") return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+            const priceA = getTotalPrice(a);
+            const priceB = getTotalPrice(b);
+            if (ordering === "high") return priceB - priceA;
+            if (ordering === "low") return priceA - priceB;
+            return 0;
+        });
     useFocusEffect(
         useCallback(() => {
             async function loadQuotes() {
@@ -62,9 +88,26 @@ export default function Home({ navigation }: any) {
             <View style={styles.content}>
                 <View style={styles.searchContainer}>
                     <Input placeholder="Título ou cliente" isSearch value={search} onChangeText={setSearch} />
-                    <TouchableOpacity style={styles.filterIcon} onPress={() => setModalVisible(!modalVisible)}>
-                        <FilterIcon width={24} height={24} color={COLORS.purpleBase} />
+                    <TouchableOpacity
+                        style={[
+                            styles.filterIcon,
+                            isFilterActive && {
+                                backgroundColor: COLORS.purpleBase,
+                            }
+                        ]}
+                        onPress={() => {
+                            setTempStatus(status);
+                            setTempOrdering(ordering);
+                            setModalVisible(true);
+                        }}
+                    >
+                        <FilterIcon
+                            width={24}
+                            height={24}
+                            color={isFilterActive ? "white" : COLORS.purpleBase}
+                        />
                     </TouchableOpacity>
+
                 </View>
                 <FlatList
                     data={filteredQuotes}
@@ -95,7 +138,17 @@ export default function Home({ navigation }: any) {
                 footer={
                     <>
                         <Button title="Resetar filtros" mode="none" variant="pale" onPress={resetFilters} />
-                        <Button title="Aplicar" mode="Check" variant="purple" />
+                        <Button
+                            title="Aplicar"
+                            mode="Check"
+                            variant="purple"
+                            onPress={() => {
+                                setStatus(tempStatus);
+                                setOrdering(tempOrdering);
+                                setModalVisible(false);
+                            }}
+                        />
+
                     </>
                 }
             >
@@ -106,29 +159,51 @@ export default function Home({ navigation }: any) {
                     <View style={styles.statusContent}>
                         <View style={styles.statusBox}>
                             <CheckboxComponent
-                                value={status.rascunho}
-                                onValueChange={() => setStatus({ ...status, rascunho: !status.rascunho })}
+                                value={tempStatus[QuoteStatus.SKETCH]}
+                                onValueChange={() =>
+                                    setTempStatus(prev => ({
+                                        ...prev,
+                                        [QuoteStatus.SKETCH]: !prev[QuoteStatus.SKETCH]
+                                    }))
+                                }
                             />
+
                             <Status mode={QuoteStatus.SKETCH} />
                         </View>
                         <View style={styles.statusBox}>
                             <CheckboxComponent
-                                value={status.enviado}
-                                onValueChange={() => setStatus({ ...status, enviado: !status.enviado })}
+                                value={status[QuoteStatus.SENT]}
+                                onValueChange={() =>
+                                    setStatus(prev => ({
+                                        ...prev,
+                                        [QuoteStatus.SENT]: !prev[QuoteStatus.SENT]
+                                    }))
+                                }
                             />
                             <Status mode={QuoteStatus.SENT} />
+
                         </View>
                         <View style={styles.statusBox}>
                             <CheckboxComponent
-                                value={status.aprovado}
-                                onValueChange={() => setStatus({ ...status, aprovado: !status.aprovado })}
+                                value={status[QuoteStatus.APPROVED]}
+                                onValueChange={() =>
+                                    setStatus(prev => ({
+                                        ...prev,
+                                        [QuoteStatus.APPROVED]: !prev[QuoteStatus.APPROVED]
+                                    }))
+                                }
                             />
                             <Status mode={QuoteStatus.APPROVED} />
                         </View>
                         <View style={styles.statusBox}>
                             <CheckboxComponent
-                                value={status.recusado}
-                                onValueChange={() => setStatus({ ...status, recusado: !status.recusado })}
+                                value={status[QuoteStatus.REFUSED]}
+                                onValueChange={() =>
+                                    setStatus(prev => ({
+                                        ...prev,
+                                        [QuoteStatus.REFUSED]: !prev[QuoteStatus.REFUSED]
+                                    }))
+                                }
                             />
                             <Status mode={QuoteStatus.REFUSED} />
                         </View>
@@ -140,7 +215,10 @@ export default function Home({ navigation }: any) {
                     </Text>
                     <View style={styles.statusContent}>
                         <View style={styles.ordenationContent}>
-                            <RadioButton selected={ordering === "recent"} onPress={() => setOrdering("recent")} />
+                            <RadioButton
+                                selected={tempOrdering === "recent"}
+                                onPress={() => setTempOrdering("recent")}
+                            />
                             <View style={styles.status}>
                                 <Text style={styles.orderingText}>
                                     Mais recente
