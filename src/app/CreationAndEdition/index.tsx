@@ -176,6 +176,7 @@ export default function CreationAndEdition() {
                                 price={item.price}
                                 quantity={item.quantity}
                                 onPress={() => handleEdit(item)}
+                                canEdit
                             />
                         ))}
                         <Button title="Adicionar serviço" mode="Plus" variant="pale" onPress={() => setModalVisible(true)} />

@@ -8,8 +8,9 @@ interface ServiceProps extends TouchableOpacityProps {
     description: string
     price: number
     quantity: number
+    canEdit?: boolean
 }
-export default function Services({ title, description, price, quantity, ...rest }: ServiceProps) {
+export default function Services({ title, description, price, quantity, canEdit = false, ...rest }: ServiceProps) {
     const formattedPrice = price.toLocaleString("pt-BR", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
@@ -27,9 +28,9 @@ export default function Services({ title, description, price, quantity, ...rest 
                 </View>
                 <Text style={styles.quantity}>{`Qt: ` + quantity}</Text>
             </View>
-            <TouchableOpacity {...rest}>
+            {canEdit && <TouchableOpacity {...rest}>
                 <Edit width={24} height={24} color={COLORS.purpleBase} />
-            </TouchableOpacity>
+            </TouchableOpacity>}
         </View>
     )
 }

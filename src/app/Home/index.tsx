@@ -119,7 +119,7 @@ export default function Home({ navigation }: any) {
                             status={item.status}
                             price={getTotalPrice(item)}
                             onPress={() =>
-                                navigation.navigate('CreationAndEdition', { id: item.id })
+                                navigation.navigate('Details', { id: item.id.toString() })
                             }
                         />
                     )}

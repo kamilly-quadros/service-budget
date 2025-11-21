@@ -1,39 +1,62 @@
+
 import { styles } from "./styles"
 import { COLORS } from "@/utils/theme"
 import Header from "@/components/Header"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/Button"
 import Shop from '../../assets/icons/Shop.svg'
 import Note from '../../assets/icons/Note.svg'
+import { RootStackParamList } from '../../../App'
 import Credit from '../../assets/icons/Credit.svg'
 import { View, Text, ScrollView } from "react-native"
+import { RouteProp, useRoute } from '@react-navigation/native'
+import { quoteStorage, QuoteItem } from "@/storage/quoteStorage"
 
+type DetailsRouteProp = RouteProp<RootStackParamList, 'Details'>;
 export default function Details() {
+    const route = useRoute<DetailsRouteProp>();
+    const { id } = route.params;
+    const [quote, setQuote] = useState<QuoteItem | null>(null)
+    function formatDate(dateString?: string) {
+        if (!dateString) return "";
+        const date = new Date(dateString);
+        return date.toLocaleDateString("pt-BR");
+    }
+    useEffect(() => {
+        async function loadQuote() {
+            if (id) {
+                const data = await quoteStorage.getById(id)
+                setQuote(data)
+            }
+        }
+        loadQuote()
+    }, [id])
     return (
         <ScrollView style={styles.container}>
-            <Header />
+            <Header id={id} />
             <View style={styles.content}>
                 <View style={styles.info}>
                     <View style={styles.projectInfoContainer}>
                         <View style={styles.projectIconContainer}>
                             <Shop width={24} height={24} color={COLORS.purpleBase} />
                         </View>
-                        <Text style={styles.title}>Desenvolvimento de aplicativo de loja online</Text>
+                        <Text style={styles.title}>{quote?.title}</Text>
                     </View>
                     <View style={styles.clientInfoContainer}>
                         <View style={styles.heading}>
                             <View style={styles.text}>
                                 <Text style={styles.title2}>Cliente</Text>
-                                <Text style={styles.title3}>Soluções Tecnológicas Beta</Text>
+                                <Text style={styles.title3}>{quote?.client}</Text>
                             </View>
                         </View>
                         <View style={styles.heading}>
                             <View style={styles.text}>
                                 <Text style={styles.title2}>Criado em</Text>
-                                <Text style={styles.title3}>22/08/2024</Text>
+                                <Text style={styles.title3}>{formatDate(quote?.createdAt)}</Text>
                             </View>
                             <View style={styles.text}>
                                 <Text style={styles.title2}>Atualizado em</Text>
-                                <Text style={styles.title3}>25/08/2024</Text>
+                                <Text style={styles.title3}>{formatDate(quote?.updatedAt)}</Text>
                             </View>
                         </View>
                     </View>

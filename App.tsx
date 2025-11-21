@@ -21,7 +21,7 @@ import Details from '@/app/Details'
 export type RootStackParamList = {
   Home: undefined;
   CreationAndEdition: undefined;
-  Details: undefined;
+  Details: {id:string};
 };
 export const Text = (props: RNTextProps) => {
   const { style, ...rest } = props;

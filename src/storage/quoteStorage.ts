@@ -26,6 +26,15 @@ async function get(): Promise<QuoteItem[]> {
         throw new Error("QUOTE_GET: " + error)
     }
 }
+async function getById(id: string): Promise<QuoteItem | null> {
+    try {
+        const quotes = await get()
+        const found = quotes.find((item) => item.id === id)
+        return found || null
+    } catch (error) {
+        throw new Error("QUOTE_GET_BY_ID: " + error)
+    }
+}
 async function save(items: QuoteItem[]): Promise<void> {
     try {
         await AsyncStorage.setItem(QUOTE_STORAGE_KEY, JSON.stringify(items))
@@ -39,4 +48,4 @@ async function add(newQuote: QuoteItem): Promise<QuoteItem[]> {
     await save(updated)
     return updated
 }
-export const quoteStorage = { get, save, add, }
+export const quoteStorage = { get,getById, save, add, }
