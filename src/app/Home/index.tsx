@@ -172,9 +172,9 @@ export default function Home({ navigation }: any) {
                         </View>
                         <View style={styles.statusBox}>
                             <CheckboxComponent
-                                value={status[QuoteStatus.SENT]}
+                                value={tempStatus[QuoteStatus.SENT]}
                                 onValueChange={() =>
-                                    setStatus(prev => ({
+                                    setTempStatus(prev => ({
                                         ...prev,
                                         [QuoteStatus.SENT]: !prev[QuoteStatus.SENT]
                                     }))
@@ -185,9 +185,9 @@ export default function Home({ navigation }: any) {
                         </View>
                         <View style={styles.statusBox}>
                             <CheckboxComponent
-                                value={status[QuoteStatus.APPROVED]}
+                                value={tempStatus[QuoteStatus.APPROVED]}
                                 onValueChange={() =>
-                                    setStatus(prev => ({
+                                    setTempStatus(prev => ({
                                         ...prev,
                                         [QuoteStatus.APPROVED]: !prev[QuoteStatus.APPROVED]
                                     }))
@@ -197,9 +197,9 @@ export default function Home({ navigation }: any) {
                         </View>
                         <View style={styles.statusBox}>
                             <CheckboxComponent
-                                value={status[QuoteStatus.REFUSED]}
+                                value={tempStatus[QuoteStatus.REFUSED]}
                                 onValueChange={() =>
-                                    setStatus(prev => ({
+                                    setTempStatus(prev => ({
                                         ...prev,
                                         [QuoteStatus.REFUSED]: !prev[QuoteStatus.REFUSED]
                                     }))
@@ -226,7 +226,7 @@ export default function Home({ navigation }: any) {
                             </View>
                         </View>
                         <View style={styles.ordenationContent}>
-                            <RadioButton selected={ordering === "old"} onPress={() => setOrdering("old")} />
+                            <RadioButton selected={tempOrdering === "old"} onPress={() => setTempOrdering("old")} />
                             <View style={styles.status}>
                                 <Text style={styles.orderingText}>
                                     Mais antigo
@@ -234,7 +234,7 @@ export default function Home({ navigation }: any) {
                             </View>
                         </View>
                         <View style={styles.ordenationContent}>
-                            <RadioButton selected={ordering === "high"} onPress={() => setOrdering("high")} />
+                            <RadioButton selected={tempOrdering === "high"} onPress={() => setTempOrdering("high")} />
                             <View style={styles.status}>
                                 <Text style={styles.orderingText}>
                                     Maior valor
@@ -242,7 +242,7 @@ export default function Home({ navigation }: any) {
                             </View>
                         </View>
                         <View style={styles.ordenationContent}>
-                            <RadioButton selected={ordering === "low"} onPress={() => setOrdering("low")} />
+                            <RadioButton selected={tempOrdering === "low"} onPress={() => setTempOrdering("low")} />
                             <View style={styles.status}>
                                 <Text style={styles.orderingText}>
                                     Menor valor

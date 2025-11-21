@@ -1,3 +1,4 @@
+import Status from "../Status"
 import { styles } from "./styles"
 import { QuoteStatus } from "@/types/Status"
 import { View, Text, TouchableOpacity } from "react-native"
@@ -17,8 +18,7 @@ export default function Card({ title, client, status, price, onPress }: CardProp
                 <Text>{client}</Text>
             </View>
             <View style={styles.status}>
-                <View style={styles.statusCircle} />
-                <Text>{status}</Text>
+                <Status mode={status} />
             </View>
             <View style={styles.price}>
                 <Text style={styles.priceLabel}>R$</Text>

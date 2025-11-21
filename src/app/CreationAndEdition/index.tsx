@@ -13,9 +13,9 @@ import Note from '../../assets/icons/Note.svg'
 import ModalComponent from '@/components/Modal'
 import Credit from '../../assets/icons/Credit.svg'
 import RadioButton from '@/components/RadioButton'
-import { View, Text, ScrollView } from 'react-native'
 import { quoteStorage } from "@/storage/quoteStorage"
 import { useNavigation } from '@react-navigation/native'
+import { View, Text, ScrollView, Alert } from 'react-native'
 
 interface ServiceItem {
     id: number;
@@ -47,6 +47,14 @@ export default function CreationAndEdition() {
             maximumFractionDigits: 2
         });
     }
+    function parseMoney(value: string) {
+        if (!value) return 0;
+        const cleaned = value
+            .replace(/[^\d,.-]/g, "")
+            .replace(/\./g, "")
+            .replace(",", ".");
+        return Number(cleaned);
+    }
     function handleEdit(service: ServiceItem) {
         setEditingServiceId(service.id);
         setServiceTitle(service.title);
@@ -71,7 +79,7 @@ export default function CreationAndEdition() {
             id: editingServiceId ?? Date.now(),
             title: serviceTitle,
             description: serviceDesc,
-            price: Number(servicePrice.replace(',', '.')),
+            price: parseMoney(servicePrice),
             quantity: Number(serviceQty)
         };
         if (editingServiceId) {
@@ -107,7 +115,7 @@ export default function CreationAndEdition() {
         };
         try {
             await quoteStorage.add(newQuote);
-            navigation.goBack();
+            Alert.alert("Sucesso", "Cotação salva com sucesso", [{ text: "OK", onPress: () => navigation.goBack() }]);
         } catch (error) {
             console.error("Erro ao salvar orçamento:", error);
         }
