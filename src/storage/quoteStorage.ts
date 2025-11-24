@@ -48,4 +48,14 @@ async function add(newQuote: QuoteItem): Promise<QuoteItem[]> {
     await save(updated)
     return updated
 }
-export const quoteStorage = { get, getById, save, add, }
+async function remove(id: string): Promise<QuoteItem[]> {
+    try {
+        const quotes = await get()
+        const updated = quotes.filter((item) => item.id !== id)
+        await save(updated)
+        return updated
+    } catch (error) {
+        throw new Error("QUOTE_REMOVE: " + error)
+    }
+}
+export const quoteStorage = { get, getById, save, add, remove}

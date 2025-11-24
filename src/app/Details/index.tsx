@@ -8,18 +8,36 @@ import Shop from '../../assets/icons/Shop.svg'
 import Note from '../../assets/icons/Note.svg'
 import { RootStackParamList } from '../../../App'
 import Credit from '../../assets/icons/Credit.svg'
-import { View, Text, ScrollView } from 'react-native'
-import { RouteProp, useRoute } from '@react-navigation/native'
+import { View, Text, ScrollView, Alert } from 'react-native'
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { quoteStorage, QuoteItem } from '@/storage/quoteStorage'
 
 type DetailsRouteProp = RouteProp<RootStackParamList, 'Details'>;
 export default function Details() {
-    const route = useRoute<DetailsRouteProp>();
+    const navigation = useNavigation()
+    const route = useRoute<DetailsRouteProp>()
     const { id } = route.params;
     const [quote, setQuote] = useState<QuoteItem | null>(null)
     const subtotal = quote?.items.reduce((acc, item) => { return acc + item.price * item.quantity; }, 0) ?? 0;
     const discountValue = subtotal * ((quote?.discountPct ?? 0) / 100);
-    const total = subtotal - discountValue;    
+    const total = subtotal - discountValue;
+    async function handleDelete() {
+        Alert.alert(
+            "Excluir cotação",
+            "Tem certeza que deseja excluir esta cotação?",
+            [
+                { text: "Cancelar", style: "cancel" },
+                {
+                    text: "Excluir",
+                    style: "destructive",
+                    onPress: async () => {
+                        await quoteStorage.remove(id)
+                        navigation.goBack()
+                    }
+                }
+            ]
+        )
+    }
     function formatDate(dateString?: string) {
         if (!dateString) return "";
         const date = new Date(dateString);
@@ -135,7 +153,7 @@ export default function Details() {
             </View>
             <View style={styles.footer}>
                 <View style={styles.discountInfoContainer}>
-                    <Button mode="Trash" variant="pale" />
+                    <Button mode="Trash" variant="pale" onPress={handleDelete} />
                     <Button mode="Copy" variant="pale" />
                     <Button mode="Edit" variant="pale" />
                 </View>
