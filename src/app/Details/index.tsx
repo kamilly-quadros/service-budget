@@ -20,6 +20,32 @@ export default function Details({ navigation }: any) {
     const subtotal = quote?.items.reduce((acc, item) => { return acc + item.price * item.quantity; }, 0) ?? 0;
     const discountValue = subtotal * ((quote?.discountPct ?? 0) / 100);
     const total = subtotal - discountValue;
+    function formatDate(dateString?: string) {
+        if (!dateString) return "";
+        const date = new Date(dateString);
+        return date.toLocaleDateString("pt-BR");
+    }
+    function formatMoney(value: number) {
+        return value.toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL"
+        });
+    }
+    async function handleCopy(){
+        if(!quote)return
+        const newQuote = {
+            id: String(Date.now()),
+            title: quote.title,
+            client:quote.client,
+            items: quote.items,
+            discountPct: quote.discountPct,
+            status:quote.status,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        };
+        await quoteStorage.add(newQuote);
+        Alert.alert("", "Cotação duplicada com sucesso", [{ text: "OK", onPress: () => navigation.navigate("Home") }]);
+    }
     async function handleDelete() {
         Alert.alert(
             "Excluir cotação",
@@ -39,17 +65,6 @@ export default function Details({ navigation }: any) {
                 }
             ]
         )
-    }
-    function formatDate(dateString?: string) {
-        if (!dateString) return "";
-        const date = new Date(dateString);
-        return date.toLocaleDateString("pt-BR");
-    }
-    function formatMoney(value: number) {
-        return value.toLocaleString("pt-BR", {
-            style: "currency",
-            currency: "BRL"
-        });
     }
     useEffect(() => {
         async function loadQuote() {
@@ -157,7 +172,7 @@ export default function Details({ navigation }: any) {
             <View style={styles.footer}>
                 <View style={styles.discountInfoContainer}>
                     <Button mode="Trash" variant="pale" onPress={handleDelete} />
-                    <Button mode="Copy" variant="pale" />
+                    <Button mode="Copy" variant="pale" onPress={handleCopy}/>
                     <Button mode="Edit" variant="pale" onPress={() => navigation.navigate('CreationAndEdition', { id })} />
                 </View>
                 <Button mode="Direction" variant="purple" title="Compartilhar" />
