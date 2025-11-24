@@ -1,7 +1,7 @@
-import { QuoteStatus } from "@/types/Status";
-import { styles } from "./styles";
-import { COLORS } from "@/utils/theme";
-import { View, Text } from "react-native";
+import { styles } from './styles'
+import { COLORS } from '@/utils/theme'
+import { View, Text } from 'react-native'
+import { QuoteStatus } from '@/types/Status'
 
 interface StatusProps {
     mode: QuoteStatus.SKETCH | QuoteStatus.SENT | QuoteStatus.APPROVED | QuoteStatus.REFUSED

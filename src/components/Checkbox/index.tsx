@@ -1,6 +1,6 @@
-import { styles } from "./styles";
-import Checkbox from "expo-checkbox";
-import { COLORS } from "@/utils/theme";
+import { styles } from './styles'
+import Checkbox from 'expo-checkbox'
+import { COLORS } from '@/utils/theme'
 
 interface CheckboxProps {
     value: boolean;

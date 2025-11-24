@@ -1,5 +1,5 @@
-import { StyleSheet } from "react-native"
-import { COLORS, FONTS } from "@/utils/theme"
+import { StyleSheet } from 'react-native'
+import { COLORS, FONTS } from '@/utils/theme'
 
 export const styles = StyleSheet.create({
     container: {
@@ -25,12 +25,6 @@ export const styles = StyleSheet.create({
         position: 'absolute',
         right: 10,
         top: 16,
-    },
-    statusCircle: {
-        width: 8,
-        height: 8,
-        backgroundColor: COLORS.successBase,
-        borderRadius: 10,
     },
     price: {
         flexDirection: 'row',

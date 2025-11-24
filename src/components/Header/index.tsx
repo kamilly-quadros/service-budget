@@ -1,11 +1,11 @@
-import Status from "../Status"
-import { styles } from "./styles"
-import { COLORS } from "@/utils/theme"
-import { useEffect, useState } from "react"
+import Status from '../Status'
+import { styles } from './styles'
+import { COLORS } from '@/utils/theme'
+import { useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
-import { View, Text, TouchableOpacity } from "react-native"
+import { View, Text, TouchableOpacity } from 'react-native'
 import ChevronLeft from '../../assets/icons/ChevronLeft.svg'
-import { quoteStorage, QuoteItem } from "@/storage/quoteStorage"
+import { quoteStorage, QuoteItem } from '@/storage/quoteStorage'
 
 interface HeaderProps {
     id?: string

@@ -1,6 +1,6 @@
-import { styles } from "./styles";
-import { COLORS } from "@/utils/theme";
-import { Pressable, View } from "react-native";
+import { styles } from './styles'
+import { COLORS } from '@/utils/theme'
+import { Pressable, View } from 'react-native'
 interface RadioButtonProps {
     selected: boolean;
     onPress: () => void;

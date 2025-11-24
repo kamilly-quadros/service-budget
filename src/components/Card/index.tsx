@@ -1,7 +1,7 @@
-import Status from "../Status"
-import { styles } from "./styles"
-import { QuoteStatus } from "@/types/Status"
-import { View, Text, TouchableOpacity } from "react-native"
+import Status from '../Status'
+import { styles } from './styles'
+import { QuoteStatus } from '@/types/Status'
+import { View, Text, TouchableOpacity } from 'react-native'
 
 interface CardProps {
     title: string

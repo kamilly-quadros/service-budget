@@ -1,7 +1,7 @@
-import { styles } from "./styles"
-import { COLORS } from "@/utils/theme"
+import { styles } from './styles'
+import { COLORS } from '@/utils/theme'
 import Edit from '../../assets/icons/Edit.svg'
-import { View, Text, TouchableOpacity, TouchableOpacityProps } from "react-native"
+import { View, Text, TouchableOpacity, TouchableOpacityProps } from 'react-native'
 
 interface ServiceProps extends TouchableOpacityProps {
     title: string

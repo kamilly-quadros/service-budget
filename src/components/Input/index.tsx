@@ -1,10 +1,10 @@
-import { useState } from "react"
-import { styles } from "./styles"
-import { COLORS } from "@/utils/theme"
+import { useState } from 'react'
+import { styles } from './styles'
+import { COLORS } from '@/utils/theme'
 import Plus from '../../assets/icons/Plus.svg'
 import Minus from '../../assets/icons/Minus.svg'
 import Search from '../../assets/icons/Search.svg'
-import { TextInput, TextInputProps, View, Text, TouchableOpacity } from "react-native"
+import { TextInput, TextInputProps, View, Text, TouchableOpacity } from 'react-native'
 
 interface InputProps extends TextInputProps {
     isSearch?: boolean

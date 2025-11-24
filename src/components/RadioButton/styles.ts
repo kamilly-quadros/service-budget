@@ -1,5 +1,5 @@
-import { COLORS } from "@/utils/theme";
-import { StyleSheet } from "react-native";
+import { COLORS } from '@/utils/theme'
+import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
     radioOuter: {

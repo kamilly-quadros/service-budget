@@ -1,8 +1,8 @@
-import React from "react";
-import { styles } from "./styles";
-import { COLORS } from "@/utils/theme";
+import React from 'react'
+import { styles } from './styles'
+import { COLORS } from '@/utils/theme'
 import Close from '../../assets/icons/Close.svg';
-import { Modal, View, Text, TouchableOpacity } from "react-native";
+import { Modal, View, Text, TouchableOpacity } from 'react-native'
 
 interface ModalProps {
     modalVisible: boolean;
