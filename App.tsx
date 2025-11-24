@@ -1,4 +1,5 @@
 import Home from './src/app/Home'
+import Details from '@/app/Details'
 import { StatusBar } from 'expo-status-bar'
 import { loadFonts } from './src/config/fonts'
 import React, { useState, useEffect } from 'react'
@@ -16,7 +17,6 @@ import {
   StyleProp,
   TextStyle
 } from 'react-native'
-import Details from '@/app/Details'
 
 export type RootStackParamList = {
   Home: undefined;

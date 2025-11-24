@@ -1,5 +1,5 @@
-import { QuoteStatus } from "@/types/Status"
-import AsyncStorage from "@react-native-async-storage/async-storage"
+import { QuoteStatus } from '@/types/Status'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const QUOTE_STORAGE_KEY = "@quotes:storage"
 export type QuoteItem = {
