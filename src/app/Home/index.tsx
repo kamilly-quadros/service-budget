@@ -1,4 +1,4 @@
-import { styles } from "./styles"
+import { styles } from './styles'
 import Card from '@/components/Card'
 import { COLORS } from '@/utils/theme'
 import Status from '@/components/Status'

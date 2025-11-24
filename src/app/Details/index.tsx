@@ -1,16 +1,15 @@
-
-import { styles } from "./styles"
-import { COLORS } from "@/utils/theme"
-import Header from "@/components/Header"
-import { useEffect, useState } from "react"
-import { Button } from "@/components/Button"
+import { styles } from './styles'
+import { COLORS } from '@/utils/theme'
+import Header from '@/components/Header'
+import { useEffect, useState } from 'react'
+import { Button } from '@/components/Button'
 import Shop from '../../assets/icons/Shop.svg'
 import Note from '../../assets/icons/Note.svg'
 import { RootStackParamList } from '../../../App'
 import Credit from '../../assets/icons/Credit.svg'
-import { View, Text, ScrollView } from "react-native"
+import { View, Text, ScrollView } from 'react-native'
 import { RouteProp, useRoute } from '@react-navigation/native'
-import { quoteStorage, QuoteItem } from "@/storage/quoteStorage"
+import { quoteStorage, QuoteItem } from '@/storage/quoteStorage'
 
 type DetailsRouteProp = RouteProp<RootStackParamList, 'Details'>;
 export default function Details() {

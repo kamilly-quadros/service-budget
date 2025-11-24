@@ -13,7 +13,7 @@ import Note from '../../assets/icons/Note.svg'
 import ModalComponent from '@/components/Modal'
 import Credit from '../../assets/icons/Credit.svg'
 import RadioButton from '@/components/RadioButton'
-import { quoteStorage } from "@/storage/quoteStorage"
+import { quoteStorage } from '@/storage/quoteStorage'
 import { useNavigation } from '@react-navigation/native'
 import { View, Text, ScrollView, Alert } from 'react-native'
 

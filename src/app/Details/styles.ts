@@ -1,5 +1,5 @@
-import { StyleSheet } from "react-native"
-import { COLORS, FONTS } from "../../utils/theme"
+import { StyleSheet } from 'react-native'
+import { COLORS, FONTS } from '../../utils/theme'
 
 export const styles = StyleSheet.create({
     container: {
@@ -117,11 +117,6 @@ export const styles = StyleSheet.create({
     },
     title5: {
         fontSize: FONTS.xs,
-        color: COLORS.gray700,
-    },
-    title6: {
-        fontSize: FONTS.md,
-        fontWeight: 'bold',
         color: COLORS.gray700,
     },
     price3: {

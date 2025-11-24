@@ -10,7 +10,7 @@ import { quoteStorage, QuoteItem } from "@/storage/quoteStorage"
 interface HeaderProps {
     id?: string
 }
-export default function Header({ id }: HeaderProps){
+export default function Header({ id }: HeaderProps) {
     const navigation = useNavigation()
     const [quote, setQuote] = useState<QuoteItem | null>(null)
     useEffect(() => {

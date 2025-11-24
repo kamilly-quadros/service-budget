@@ -1,5 +1,5 @@
-import { StyleSheet } from "react-native"
-import { COLORS, FONTS } from "../../utils/theme"
+import { StyleSheet } from 'react-native'
+import { COLORS, FONTS } from '../../utils/theme'
 
 export const styles = StyleSheet.create({
     container: {
@@ -84,25 +84,6 @@ export const styles = StyleSheet.create({
         color: COLORS.dangerBase,
         flexDirection: 'row',
         alignItems: 'center'
-    },
-    discount: {
-        gap: 8,
-        paddingHorizontal: 16,
-        paddingVertical: 12,
-        backgroundColor: COLORS.gray100,
-        borderColor: COLORS.gray300,
-        borderWidth: 1,
-        borderRadius: 999,
-        flexDirection: 'row',
-        alignItems: 'center'
-    },
-    discountValue: {
-        fontSize: FONTS.md,
-        color: COLORS.gray700
-    },
-    discountSymbol: {
-        fontSize: 16,
-        color: COLORS.gray600
     },
     footer: {
         paddingHorizontal: 20,
