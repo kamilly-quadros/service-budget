@@ -1,9 +1,10 @@
-import { useState } from 'react'
+
 import { styles } from './styles'
 import { COLORS } from '@/utils/theme'
 import Status from '@/components/Status'
 import Header from '@/components/Header'
 import { Input } from '@/components/Input'
+import { useEffect, useState } from 'react'
 import Services from '@/components/Services'
 import Tag from '../../assets/icons/Tag.svg'
 import { Button } from '@/components/Button'
@@ -11,11 +12,12 @@ import { QuoteStatus } from '@/types/Status'
 import Shop from '../../assets/icons/Shop.svg'
 import Note from '../../assets/icons/Note.svg'
 import ModalComponent from '@/components/Modal'
+import { RootStackParamList } from '../../../App'
 import Credit from '../../assets/icons/Credit.svg'
 import RadioButton from '@/components/RadioButton'
-import { quoteStorage } from '@/storage/quoteStorage'
-import { useNavigation } from '@react-navigation/native'
 import { View, Text, ScrollView, Alert } from 'react-native'
+import { RouteProp, useRoute } from '@react-navigation/native'
+import { quoteStorage, QuoteItem } from '@/storage/quoteStorage'
 
 interface ServiceItem {
     id: number;
@@ -24,8 +26,10 @@ interface ServiceItem {
     price: number;
     quantity: number;
 }
-export default function CreationAndEdition() {
-    const navigation = useNavigation();
+type CreationAndEditionRouteProp = RouteProp<RootStackParamList, 'CreationAndEdition'>;
+export default function CreationAndEdition({ navigation }: any) {
+    const route = useRoute<CreationAndEditionRouteProp>()
+    const id = route.params?.id ?? null;
     const [title, setTitle] = useState('');
     const [client, setClient] = useState('');
     const [discount, setDiscount] = useState('');
@@ -41,6 +45,7 @@ export default function CreationAndEdition() {
     const subtotal = services.reduce((acc, item) => acc + item.price * item.quantity, 0);
     const discountValue = subtotal * (discountPercentage / 100);
     const totalValue = subtotal - discountValue;
+    const [quote, setQuote] = useState<QuoteItem | null>(null)
     function formatCurrency(value: number) {
         return value.toLocaleString('pt-BR', {
             minimumFractionDigits: 2,
@@ -104,25 +109,42 @@ export default function CreationAndEdition() {
             return;
         }
         const newQuote = {
-            id: String(Date.now()),
+            id: id ? id : String(Date.now()),
             title,
             client,
             items: services,
             discountPct: discountPercentage,
             status,
-            createdAt: new Date().toISOString(),
+            createdAt: id && quote ? quote.createdAt : new Date().toISOString(),
             updatedAt: new Date().toISOString()
         };
         try {
-            await quoteStorage.add(newQuote);
-            Alert.alert("Sucesso", "Cotação salva com sucesso", [{ text: "OK", onPress: () => navigation.goBack() }]);
+            if (!id) await quoteStorage.add(newQuote);
+            if (id) await quoteStorage.update(id, newQuote)
+            Alert.alert("Sucesso", "Cotação salva com sucesso", [{ text: "OK", onPress: () => navigation.navigate("Home") }]);
         } catch (error) {
             console.error("Erro ao salvar orçamento:", error);
         }
     }
+    useEffect(() => {
+        async function loadQuote() {
+            if (id) {
+                const data = await quoteStorage.getById(id)
+                if (data) {
+                    setQuote(data)
+                    setTitle(data.title)
+                    setClient(data.client)
+                    setStatus(data.status)
+                    setServices(data.items)
+                    setDiscount(data.discountPct.toString())
+                }
+            }
+        }
+        loadQuote()
+    }, [id])
     return (
         <ScrollView style={styles.container}>
-            <Header />
+            <Header id={id || undefined} />
             <View style={styles.content}>
                 <View style={styles.card}>
                     <View style={styles.cardHeader}>

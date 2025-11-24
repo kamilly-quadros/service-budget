@@ -9,12 +9,11 @@ import Note from '../../assets/icons/Note.svg'
 import { RootStackParamList } from '../../../App'
 import Credit from '../../assets/icons/Credit.svg'
 import { View, Text, ScrollView, Alert } from 'react-native'
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
+import { RouteProp, useRoute } from '@react-navigation/native'
 import { quoteStorage, QuoteItem } from '@/storage/quoteStorage'
 
 type DetailsRouteProp = RouteProp<RootStackParamList, 'Details'>;
-export default function Details() {
-    const navigation = useNavigation()
+export default function Details({ navigation }: any) {
     const route = useRoute<DetailsRouteProp>()
     const { id } = route.params;
     const [quote, setQuote] = useState<QuoteItem | null>(null)
@@ -33,6 +32,9 @@ export default function Details() {
                     onPress: async () => {
                         await quoteStorage.remove(id)
                         navigation.goBack()
+                        setTimeout(() => {
+                            Alert.alert('Sucesso', 'Cotação excluída com sucesso')
+                        }, 100)
                     }
                 }
             ]
@@ -95,8 +97,9 @@ export default function Details() {
                             <Text style={styles.title4}>Serviços inclusos</Text>
                         </View>
                         <View style={styles.servicesListContainer}>
-                            {quote?.items.map((service) => (
+                            {quote?.items.map((service, index) => (
                                 <Services
+                                    key={index}
                                     title={service.title}
                                     description={service.description}
                                     price={service.price}
@@ -155,7 +158,7 @@ export default function Details() {
                 <View style={styles.discountInfoContainer}>
                     <Button mode="Trash" variant="pale" onPress={handleDelete} />
                     <Button mode="Copy" variant="pale" />
-                    <Button mode="Edit" variant="pale" />
+                    <Button mode="Edit" variant="pale" onPress={() => navigation.navigate('CreationAndEdition', { id })} />
                 </View>
                 <Button mode="Direction" variant="purple" title="Compartilhar" />
             </View>

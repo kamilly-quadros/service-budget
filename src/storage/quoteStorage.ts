@@ -48,6 +48,26 @@ async function add(newQuote: QuoteItem): Promise<QuoteItem[]> {
     await save(updated)
     return updated
 }
+async function update(id: string, updatedData: Partial<QuoteItem>): Promise<QuoteItem[]> {
+    try {
+        const quotes = await get()
+
+        const updated = quotes.map((item) => {
+            if (item.id === id) {
+                return {
+                    ...item,
+                    ...updatedData,
+                    updatedAt: new Date().toISOString(),
+                }
+            }
+            return item
+        })
+        await save(updated)
+        return updated
+    } catch (error) {
+        throw new Error("QUOTE_UPDATE: " + error)
+    }
+}
 async function remove(id: string): Promise<QuoteItem[]> {
     try {
         const quotes = await get()
@@ -58,4 +78,4 @@ async function remove(id: string): Promise<QuoteItem[]> {
         throw new Error("QUOTE_REMOVE: " + error)
     }
 }
-export const quoteStorage = { get, getById, save, add, remove}
+export const quoteStorage = { get, getById, save, add, update, remove }

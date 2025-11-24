@@ -20,7 +20,7 @@ import {
 
 export type RootStackParamList = {
   Home: undefined;
-  CreationAndEdition: undefined;
+  CreationAndEdition: {id?:string};
   Details: {id:string};
 };
 export const Text = (props: RNTextProps) => {
