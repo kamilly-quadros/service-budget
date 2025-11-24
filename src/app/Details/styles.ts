@@ -10,7 +10,8 @@ export const styles = StyleSheet.create({
     content: {
         paddingHorizontal: 20,
         paddingVertical: 20,
-        gap: 20
+        gap: 20,
+        minHeight:'80%'
     },
     info: {
         borderRadius: 10,
@@ -93,6 +94,7 @@ export const styles = StyleSheet.create({
         gap: 16,
         flexDirection: 'row',
         alignItems: 'center',
+        width:'100%'
     },
     text2: {
         gap: 2,

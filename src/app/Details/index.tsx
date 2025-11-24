@@ -3,6 +3,7 @@ import { COLORS } from '@/utils/theme'
 import Header from '@/components/Header'
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/Button'
+import Services from '@/components/Services'
 import Shop from '../../assets/icons/Shop.svg'
 import Note from '../../assets/icons/Note.svg'
 import { RootStackParamList } from '../../../App'
@@ -16,10 +17,19 @@ export default function Details() {
     const route = useRoute<DetailsRouteProp>();
     const { id } = route.params;
     const [quote, setQuote] = useState<QuoteItem | null>(null)
+    const subtotal = quote?.items.reduce((acc, item) => { return acc + item.price * item.quantity; }, 0) ?? 0;
+    const discountValue = subtotal * ((quote?.discountPct ?? 0) / 100);
+    const total = subtotal - discountValue;    
     function formatDate(dateString?: string) {
         if (!dateString) return "";
         const date = new Date(dateString);
         return date.toLocaleDateString("pt-BR");
+    }
+    function formatMoney(value: number) {
+        return value.toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL"
+        });
     }
     useEffect(() => {
         async function loadQuote() {
@@ -67,66 +77,14 @@ export default function Details() {
                             <Text style={styles.title4}>Serviços inclusos</Text>
                         </View>
                         <View style={styles.servicesListContainer}>
-                            <View style={styles.listItemType}>
-                                <View style={styles.text2}>
-                                    <Text style={styles.text4}>Design de interfaces</Text>
-                                    <Text style={styles.title4}>Criação de wireframes e protótipos de alta fidalidade</Text>
-                                </View>
-                                <View style={styles.price}>
-                                    <View style={styles.info2}>
-                                        <View style={styles.price2}>
-                                            <Text style={styles.title5}>R$</Text>
-                                            <Text style={styles.text}>3.847,50</Text>
-                                        </View>
-                                    </View>
-                                    <Text style={styles.title2}>Qt: 1</Text>
-                                </View>
-                            </View>
-                            <View style={styles.listItemType}>
-                                <View style={styles.text2}>
-                                    <Text style={styles.text4}>Desenvolvimento front-end</Text>
-                                    <Text style={styles.title4}>Criação de interfaces de usuário interativas</Text>
-                                </View>
-                                <View style={styles.price}>
-                                    <View style={styles.info2}>
-                                        <View style={styles.price2}>
-                                            <Text style={styles.title5}>R$</Text>
-                                            <Text style={styles.text}>3.847,50</Text>
-                                        </View>
-                                    </View>
-                                    <Text style={styles.title2}>Qt: 1</Text>
-                                </View>
-                            </View>
-                            <View style={styles.listItemType}>
-                                <View style={styles.text2}>
-                                    <Text style={styles.text4}>Desenvolvimento back-end</Text>
-                                    <Text style={styles.title4}>Implementação de servidor, banco de dados e APIs</Text>
-                                </View>
-                                <View style={styles.price}>
-                                    <View style={styles.info2}>
-                                        <View style={styles.price2}>
-                                            <Text style={styles.title5}>R$</Text>
-                                            <Text style={styles.text}>3.847,50</Text>
-                                        </View>
-                                    </View>
-                                    <Text style={styles.title2}>Qt: 1</Text>
-                                </View>
-                            </View>
-                            <View style={styles.listItemType}>
-                                <View style={styles.text2}>
-                                    <Text style={styles.text4}>Implantação e suporte</Text>
-                                    <Text style={styles.title4}>Publicação nas lojas de aplicativos e suporte técnico</Text>
-                                </View>
-                                <View style={styles.price}>
-                                    <View style={styles.info2}>
-                                        <View style={styles.price2}>
-                                            <Text style={styles.title5}>R$</Text>
-                                            <Text style={styles.text}>3.847,50</Text>
-                                        </View>
-                                    </View>
-                                    <Text style={styles.title2}>Qt: 1</Text>
-                                </View>
-                            </View>
+                            {quote?.items.map((service) => (
+                                <Services
+                                    title={service.title}
+                                    description={service.description}
+                                    price={service.price}
+                                    quantity={service.quantity}
+                                />
+                            ))}
                         </View>
                     </View>
                     <View style={styles.price3}>
@@ -137,16 +95,24 @@ export default function Details() {
                             <View style={styles.text2}>
                                 <View style={styles.subtotalContainer}>
                                     <Text style={styles.title7}>Subtotal</Text>
-                                    <Text style={styles.title8}>R$ 4.050,00</Text>
+                                    <Text style={styles.title8}>
+                                        {formatMoney(subtotal)}
+                                    </Text>
                                 </View>
                                 <View style={styles.subtotalContainer}>
                                     <View style={styles.discountInfoContainer}>
                                         <Text style={styles.title7}>Desconto</Text>
-                                        <View style={styles.tag}>
-                                            <Text style={styles.title9}>5% off</Text>
-                                        </View>
+                                        {quote?.discountPct ? (
+                                            <View style={styles.tag}>
+                                                <Text style={styles.title9}>
+                                                    {quote.discountPct}% off
+                                                </Text>
+                                            </View>
+                                        ) : null}
                                     </View>
-                                    <Text style={styles.title9}>- R$ 200,00</Text>
+                                    <Text style={styles.title9}>
+                                        - {formatMoney(discountValue)}
+                                    </Text>
                                 </View>
                                 <View style={styles.line} />
                                 <View style={styles.subtotalContainer}>
@@ -154,7 +120,11 @@ export default function Details() {
                                     <View style={styles.info2}>
                                         <View style={styles.price2}>
                                             <Text style={styles.title5}>R$</Text>
-                                            <Text style={styles.title}>3.847,50</Text>
+                                            <Text style={styles.title}>
+                                                {total.toLocaleString("pt-BR", {
+                                                    minimumFractionDigits: 2
+                                                })}
+                                            </Text>
                                         </View>
                                     </View>
                                 </View>
